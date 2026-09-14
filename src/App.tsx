@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {Layout, Menu, type MenuProps, Tabs, type TabsProps} from 'antd';
 
 import {AppstoreOutlined, MailOutlined, MailTwoTone, PlaySquareOutlined, SettingOutlined,} from '@ant-design/icons';
