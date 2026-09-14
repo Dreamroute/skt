@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Layout, Menu, type MenuProps, Tabs, type TabsProps} from 'antd';
 
 import {AppstoreOutlined, MailOutlined, MailTwoTone, PlaySquareOutlined, SettingOutlined,} from '@ant-design/icons';
@@ -79,8 +79,10 @@ const tabs: TabsProps['items'] = [
 
 
 const SiderInfo = () => {
+    const [ts, setTs] = useState(tabs)
+
     const handleMenuClick: MenuProps['onClick'] = (e) => {
-        console.info(e)
+
     }
     return (
         <Menu
