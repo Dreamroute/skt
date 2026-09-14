@@ -1,8 +1,7 @@
 import React, {useState} from 'react';
-import type {MenuProps} from 'antd';
-import {Layout, Menu} from 'antd';
+import {Layout, Menu, type MenuProps, Tabs, type TabsProps} from 'antd';
 
-import {AppstoreOutlined, MailOutlined, SettingOutlined,} from '@ant-design/icons';
+import {AppstoreOutlined, MailOutlined, MailTwoTone, PlaySquareOutlined, SettingOutlined,} from '@ant-design/icons';
 
 const {Header, Sider, Content} = Layout;
 
@@ -34,48 +33,33 @@ const items: MenuItem[] = [
     {
         label: 'Navigation One',
         key: 'mail',
-        icon: <MailOutlined />,
+        icon: <MailOutlined/>,
+        children: [
+            {label: 'Option 1', key: 'setting:1a', icon: <PlaySquareOutlined/>},
+        ]
     },
     {
         label: 'Navigation Two',
         key: 'app',
-        icon: <AppstoreOutlined />,
-        disabled: true,
-    },
-    {
-        label: 'Navigation Three - Submenu',
-        key: 'SubMenu',
-        icon: <SettingOutlined />,
+        icon: <AppstoreOutlined/>,
         children: [
-            {
-                type: 'group',
-                label: 'Item 1',
-                children: [
-                    { label: 'Option 1', key: 'setting:1' },
-                    { label: 'Option 2', key: 'setting:2' },
-                ],
-            },
-            {
-                type: 'group',
-                label: 'Item 2',
-                children: [
-                    { label: 'Option 3', key: 'setting:3' },
-                    { label: 'Option 4', key: 'setting:4' },
-                ],
-            },
-        ],
+            {label: 'Option 1', key: 'setting:1b', icon: <MailTwoTone/>},
+        ]
     },
     {
-        key: 'alipay',
-        label: (
-            <a href="https://ant.design" target="_blank" rel="noopener noreferrer">
-                Navigation Four - Link
-            </a>
-        ),
-    },
+        label: 'Navigation Three',
+        key: 'SubMenu',
+        icon: <SettingOutlined/>,
+        children: [
+            {label: 'Option 1', key: 'setting:1'},
+            {label: 'Option 2', key: 'setting:2'},
+            {label: 'Option 3', key: 'setting:3'},
+            {label: 'Option 4', key: 'setting:4'},
+        ],
+    }
 ];
 
-const SiderContent = () => {
+const SiderInfo = () => {
     const [current, setCurrent] = useState('mail');
 
     const onClick: MenuProps['onClick'] = (e) => {
@@ -83,22 +67,55 @@ const SiderContent = () => {
         setCurrent(e.key);
     };
     return (
+        <Menu
+            onClick={onClick}
+            selectedKeys={[current]}
+            mode="inline"
+            items={items}
+            style={{height: '100%'}}
+        />
+    );
+};
+
+const ContentInfo = () => {
+    const onChange = (key: string) => {
+        console.log(key);
+    };
+
+    const items: TabsProps['items'] = [
+        {
+            key: '1',
+            label: 'Tab 1',
+            children: 'Content of Tab Pane 1',
+        },
+        {
+            key: '2',
+            label: 'Tab 2',
+            children: 'Content of Tab Pane 2',
+        },
+        {
+            key: '3',
+            label: 'Tab 3',
+            children: 'Content of Tab Pane 3',
+        },
+    ];
+    return (
         <>
-            <Menu onClick={onClick} selectedKeys={[current]} mode="horizontal" items={items} style={{
-                height: '100vh'
-            }} />
+            <Tabs defaultActiveKey="1" items={items} onChange={onChange}/>
         </>
     )
 }
 
 const App: React.FC = () => (
-    <Layout>
+    <Layout style={{minHeight: '100vh'}}>
         <Header style={headerStyle}>Header</Header>
         <Layout>
-            <Sider width="12%" style={siderStyle}>
-                <SiderContent />
+            <Sider width="15%" style={siderStyle}>
+                <SiderInfo/>
             </Sider>
-            <Content style={contentStyle}>Content</Content>
+            <Content style={contentStyle}>
+                <ContentInfo/>
+            </Content>
         </Layout>
     </Layout>
 );
