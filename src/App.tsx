@@ -29,7 +29,7 @@ const siderStyle: React.CSSProperties = {
 
 type MenuItem = Required<MenuProps>['items'][number];
 
-const items: MenuItem[] = [
+const menus: MenuItem[] = [
     {
         label: 'Navigation One',
         key: 'mail',
@@ -59,50 +59,44 @@ const items: MenuItem[] = [
     }
 ];
 
-const SiderInfo = () => {
-    const [current, setCurrent] = useState('mail');
+const tabs: TabsProps['items'] = [
+    {
+        key: '1',
+        label: 'Tab 1',
+        children: 'Content of Tab Pane 1',
+    },
+    {
+        key: '2',
+        label: 'Tab 2',
+        children: 'Content of Tab Pane 2',
+    },
+    {
+        key: '3',
+        label: 'Tab 3',
+        children: 'Content of Tab Pane 3',
+    },
+]
 
-    const onClick: MenuProps['onClick'] = (e) => {
-        console.log('click ', e);
-        setCurrent(e.key);
-    };
+
+const SiderInfo = () => {
+    const handleMenuClick: MenuProps['onClick'] = (e) => {
+        console.info(e)
+    }
     return (
         <Menu
-            onClick={onClick}
-            selectedKeys={[current]}
             mode="inline"
-            items={items}
+            items={menus}
             style={{height: '100%'}}
+            onClick={handleMenuClick}
         />
     );
 };
 
 const ContentInfo = () => {
-    const onChange = (key: string) => {
-        console.log(key);
-    };
-
-    const items: TabsProps['items'] = [
-        {
-            key: '1',
-            label: 'Tab 1',
-            children: 'Content of Tab Pane 1',
-        },
-        {
-            key: '2',
-            label: 'Tab 2',
-            children: 'Content of Tab Pane 2',
-        },
-        {
-            key: '3',
-            label: 'Tab 3',
-            children: 'Content of Tab Pane 3',
-        },
-    ];
     return (
-        <>
-            <Tabs defaultActiveKey="1" items={items} onChange={onChange}/>
-        </>
+        <Tabs
+            items={tabs}
+        />
     )
 }
 
