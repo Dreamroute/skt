@@ -1,31 +1,15 @@
 import React, {useState} from 'react';
 import {Layout, Menu, type MenuProps, Tabs, type TabsProps} from 'antd';
 
-import {AppstoreOutlined, MailOutlined, MailTwoTone, PlaySquareOutlined, SettingOutlined,} from '@ant-design/icons';
+import {
+    AppstoreOutlined,
+    MailOutlined,
+    MailTwoTone,
+    PlaySquareOutlined,
+    SettingOutlined,
+} from '@ant-design/icons';
 
 const {Header, Sider, Content} = Layout;
-
-const headerStyle: React.CSSProperties = {
-    textAlign: 'center',
-    color: '#fff',
-    height: 64,
-    paddingInline: 48,
-    lineHeight: '64px',
-    backgroundColor: '#4096ff',
-};
-
-const contentStyle: React.CSSProperties = {
-    textAlign: 'center',
-    minHeight: 'calc(100vh - 64px)',
-    color: '#fff',
-    backgroundColor: '#0958d9',
-};
-
-const siderStyle: React.CSSProperties = {
-    textAlign: 'center',
-    color: '#fff',
-    backgroundColor: '#1677ff',
-};
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -35,7 +19,11 @@ const menus: MenuItem[] = [
         key: 'mail',
         icon: <MailOutlined/>,
         children: [
-            {label: 'Option 1', key: 'setting:1a', icon: <PlaySquareOutlined/>},
+            {
+                label: 'Option 1',
+                key: 'setting:1a',
+                icon: <PlaySquareOutlined/>
+            },
         ]
     },
     {
@@ -43,7 +31,11 @@ const menus: MenuItem[] = [
         key: 'app',
         icon: <AppstoreOutlined/>,
         children: [
-            {label: 'Option 1', key: 'setting:1b', icon: <MailTwoTone/>},
+            {
+                label: 'Option 1',
+                key: 'setting:1b',
+                icon: <MailTwoTone/>
+            },
         ]
     },
     {
@@ -59,31 +51,24 @@ const menus: MenuItem[] = [
     }
 ];
 
-const tabs: TabsProps['items'] = [
+const initialTabs: TabsProps['items'] = [
     {
-        key: '1',
-        label: 'Tab 1',
-        children: 'Content of Tab Pane 1',
+        key: 'home',
+        label: 'Home',
+        children: 'Home Content',
     },
-    {
-        key: '2',
-        label: 'Tab 2',
-        children: 'Content of Tab Pane 2',
-    },
-    {
-        key: '3',
-        label: 'Tab 3',
-        children: 'Content of Tab Pane 3',
-    },
-]
+];
 
+interface SiderInfoProps {
+    onMenuClick: (key: string) => void
+}
 
-const SiderInfo = () => {
-    const [ts, setTs] = useState(tabs)
+const SiderInfo = ({onMenuClick}: SiderInfoProps) => {
 
     const handleMenuClick: MenuProps['onClick'] = (e) => {
-
+        onMenuClick(e.key)
     }
+
     return (
         <Menu
             mode="inline"
@@ -94,26 +79,83 @@ const SiderInfo = () => {
     );
 };
 
-const ContentInfo = () => {
+interface ContentInfoProps {
+    tabs: TabsProps['items']
+    activeKey: string
+    onChange: (key: string) => void
+}
+
+const ContentInfo = ({
+                         tabs,
+                         activeKey,
+                         onChange
+                     }: ContentInfoProps) => {
+
+    const onEdit = (key: any, action: 'add' | 'remove') => {
+        console.info(key)
+        console.info(action)
+    };
+
     return (
         <Tabs
             items={tabs}
+            activeKey={activeKey}
+            onChange={onChange}
+            type="editable-card"
+            onEdit={onEdit}
         />
     )
 }
 
-const App: React.FC = () => (
-    <Layout style={{minHeight: '100vh'}}>
-        <Header style={headerStyle}>Header</Header>
-        <Layout>
-            <Sider width="15%" style={siderStyle}>
-                <SiderInfo/>
-            </Sider>
-            <Content style={contentStyle}>
-                <ContentInfo/>
-            </Content>
+const App: React.FC = () => {
+
+    const [tabs, setTabs] = useState<TabsProps['items']>(initialTabs)
+
+    const [activeKey, setActiveKey] = useState('home')
+
+    const handleMenuClick = (key: string) => {
+
+        // 已经存在就不要重复添加
+        const exists = tabs?.some(tab => tab.key === key)
+
+        if (!exists) {
+            const newTab = {
+                key: key,
+                label: key,
+                children: `Content of ${key}`
+            }
+
+            setTabs([
+                ...(tabs ?? []),
+                newTab
+            ])
+        }
+
+        // 点击菜单之后自动切换到对应 Tab
+        setActiveKey(key)
+    }
+
+    return (
+        <Layout style={{minHeight: '100vh'}}>
+            <Header style={{height: 64}}>Header</Header>
+
+            <Layout>
+                <Sider width="15%">
+                    <SiderInfo
+                        onMenuClick={handleMenuClick}
+                    />
+                </Sider>
+
+                <Content style={{minHeight: 'calc(100vh - 64px)'}}>
+                    <ContentInfo
+                        tabs={tabs}
+                        activeKey={activeKey}
+                        onChange={setActiveKey}
+                    />
+                </Content>
+            </Layout>
         </Layout>
-    </Layout>
-);
+    );
+};
 
 export default App;
